@@ -10,7 +10,7 @@ namespace Squid.Core
 		public ISourceFactory Factory { get; private set; }
 		public Type SourceType { get; protected set; }
 
-		public SourceCreatorBase(ISourceFactory factory)
+		protected SourceCreatorBase(ISourceFactory factory)
 		{
 			Factory = factory;
 		}

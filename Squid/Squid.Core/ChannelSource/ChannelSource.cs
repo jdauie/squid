@@ -8,7 +8,7 @@ namespace Squid.Core
 	{
 		public ObservableDownloadSourceCollection DownloadSources { get; private set; }
 
-		public ChannelSource(Uri uri, ChannelSourceCreator creator, ParameterList parameters)
+		protected ChannelSource(Uri uri, ChannelSourceCreator creator, ParameterList parameters)
 			: base(uri, parameters)
 		{
 			SetParameterValue(ChannelSourceCreator.CreatorParameterName, creator);
@@ -16,7 +16,7 @@ namespace Squid.Core
 			DownloadSources = new ObservableDownloadSourceCollection();
 		}
 
-		public ChannelSource(Uri uri, ChannelSourceCreator creator)
+		protected ChannelSource(Uri uri, ChannelSourceCreator creator)
 			: this(uri, creator, null)
 		{
 		}

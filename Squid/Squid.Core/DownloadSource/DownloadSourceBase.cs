@@ -9,13 +9,13 @@ namespace Squid.Core
 	/// </summary>
 	public abstract class DownloadSourceBase : SourceBase, ILightweightDownloadSource
 	{
-		public DownloadSourceBase(Uri uri, DownloadSourceCreator creator, ParameterList parameters)
+		protected DownloadSourceBase(Uri uri, DownloadSourceCreator creator, ParameterList parameters)
 			: base(uri, parameters)
 		{
 			SetParameterValue(DownloadSourceCreator.CreatorParameterName, creator);
 		}
 
-		public DownloadSourceBase(Uri uri, DownloadSourceCreator creator)
+		protected DownloadSourceBase(Uri uri, DownloadSourceCreator creator)
 			: this(uri, creator, null)
 		{
 		}

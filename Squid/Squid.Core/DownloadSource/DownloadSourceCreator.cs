@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.IO;
 
 namespace Squid.Core
@@ -10,7 +9,7 @@ namespace Squid.Core
 	{
 		public const string CreatorParameterName = "Creator";
 
-		public DownloadSourceCreator(ISourceFactory factory)
+		protected DownloadSourceCreator(ISourceFactory factory)
 			: base(factory)
 		{
 			SourceType = typeof(IDownloadSource);

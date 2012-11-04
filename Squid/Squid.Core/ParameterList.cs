@@ -36,7 +36,7 @@ namespace Squid.Core
 
 		public void AddValue(string name, object value)
 		{
-			Parameter parameter = new Parameter(name, value);
+			var parameter = new Parameter(name, value);
 			Add(name, parameter);
 		}
 

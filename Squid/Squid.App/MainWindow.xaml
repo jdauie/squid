@@ -28,14 +28,14 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <TextBox Grid.Row="0" Grid.Column="0" Height="22" HorizontalAlignment="Stretch" Name="InputPath" />
-            <Button Grid.Row="0" Grid.Column="1" Content="Retrieve" Height="23" Name="buttonRetrieve" VerticalAlignment="Top" Width="75" Click="buttonRetrieve_Click" />
+            <Button Grid.Row="0" Grid.Column="1" Content="Retrieve" Height="23" Name="buttonRetrieve" VerticalAlignment="Top" Width="75" Click="OnRetrieveClick" />
         </Grid>
 
-        <ListBox Grid.Row="1" Grid.Column="0" Name="DownloadSpecifiers" MouseDoubleClick="DownloadSpecifiers_MouseDoubleClick" />
+        <ListBox Grid.Row="1" Grid.Column="0" Name="DownloadSpecifiers" MouseDoubleClick="OnDownloadSpecifiersMouseDoubleClick" />
 
         <TextBox Grid.Row="2" Grid.Column="0" Height="22" Name="OutputFilePath" Text="{Binding ElementName=DownloadSpecifiers, Path=SelectedItem.SuggestedFileName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
-        <DataGrid Grid.Row="3" Grid.Column="0" Name="Downloads" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="Downloads_MouseDoubleClick">
+        <DataGrid Grid.Row="3" Grid.Column="0" Name="Downloads" AutoGenerateColumns="False" IsReadOnly="True" MouseDoubleClick="OnDownloadsMouseDoubleClick">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding LocalFileName, Mode=OneWay}" />
                 <DataGridTextColumn Header="Size" Binding="{Binding DownloadSpecifier.RemoteFileInfo.FileSize, Mode=OneWay, Converter={core:LongToSizeConverter}}" CellStyle="{StaticResource RightAlignedCellStyle}" />

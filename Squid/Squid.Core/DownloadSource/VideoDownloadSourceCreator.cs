@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
 
 namespace Squid.Core
@@ -12,8 +11,8 @@ namespace Squid.Core
 		public const string TitleParameterName = "Title";
 		public const string DescriptionParameterName = "Description";
 		public const string ThumbnailParameterName = "Thumbnail";
-		
-		public VideoDownloadSourceCreator(ISourceFactory factory)
+
+		protected VideoDownloadSourceCreator(ISourceFactory factory)
 			: base(factory)
 		{
 		}
@@ -29,9 +28,9 @@ namespace Squid.Core
 		protected string GetPageData(Uri uri)
 		{
 			String pageData;
-			using (Stream stream = CreateStream(uri, 0, 0))
+			using (var stream = CreateStream(uri, 0, 0))
 			{
-				using (StreamReader sr = new StreamReader(stream))
+				using (var sr = new StreamReader(stream))
 				{
 					pageData = sr.ReadToEnd();
 				}

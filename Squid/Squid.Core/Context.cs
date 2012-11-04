@@ -9,18 +9,18 @@ namespace Squid.Core
 {
 	public class Context
 	{
-		private string m_baseDirectory;
+		private readonly string m_baseDirectory;
 		private List<ISourceFactory> m_factories;
 
-		private static Context m_instance;
+		private static Context c_instance;
 
 		public static Context Instance
 		{
 			get
 			{
-				if (m_instance == null)
-					m_instance = new Context();
-				return m_instance;
+				if (c_instance == null)
+					c_instance = new Context();
+				return c_instance;
 			}
 		}
 
@@ -38,7 +38,7 @@ namespace Squid.Core
 
 		public ISourceFactory FindFactoryByCreatorType(Type type)
 		{
-			ISourceFactory factory = m_factories.Where(f => f.CreatorType.IsAssignableFrom(type)).FirstOrDefault();
+			ISourceFactory factory = m_factories.FirstOrDefault(f => f.CreatorType.IsAssignableFrom(type));
 			return factory;
 		}
 
@@ -48,8 +48,7 @@ namespace Squid.Core
 
 			var creator = m_factories
 				.Select(f => f.GetCreator(uri))
-				.Where(c => c != null)
-				.FirstOrDefault();
+				.FirstOrDefault(c => c != null);
 
 			if (creator != null)
 				source = creator.Factory.Create(uri);
@@ -68,7 +67,7 @@ namespace Squid.Core
 			var assemblies = app.GetAssemblies();
 			var factoryTypes = assemblies
 				.SelectMany(a => a.GetTypes())
-				.Where(t => baseType.IsAssignableFrom(t));
+				.Where(baseType.IsAssignableFrom);
 
 			foreach (Type type in factoryTypes)
 			{
@@ -77,7 +76,7 @@ namespace Squid.Core
 				{
 					try
 					{
-						ISourceFactory factory = Activator.CreateInstance(type, this) as ISourceFactory;
+						var factory = Activator.CreateInstance(type, this) as ISourceFactory;
 						factory.Init();
 						m_factories.Add(factory);
 						result = '+';

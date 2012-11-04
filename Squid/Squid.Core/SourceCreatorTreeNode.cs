@@ -1,28 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Net;
-using System.IO;
-using System.Web;
-using System.Xml.XPath;
 
 namespace Squid.Core
 {
 	public class SourceCreatorTreeNode
 	{
-		private Type m_type;
-		private ISourceCreator m_instance;
-		private IEnumerable<SourceCreatorTreeNode> m_childCreatorNodes;
+		private readonly Type m_type;
+		private readonly ISourceCreator m_instance;
+		private readonly List<SourceCreatorTreeNode> m_childCreatorNodes;
 
 		public ISourceCreator Creator
 		{
 			get { return m_instance; }
 		}
 
-		public SourceCreatorTreeNode(ISourceFactory factory, Type baseType, IEnumerable<Type> creatorTypes)
+		public SourceCreatorTreeNode(ISourceFactory factory, Type baseType, IList<Type> creatorTypes)
 		{
 			m_type = baseType;
 
@@ -32,14 +25,14 @@ namespace Squid.Core
 				m_instance.Init();
 			}
 
-			var childCreatorTypes = creatorTypes.Where(t => t.BaseType.Equals(m_type));
+			var childCreatorTypes = creatorTypes.Where(t => t.BaseType == m_type).ToList();
 
-			if (childCreatorTypes.Count() > 0)
+			if (childCreatorTypes.Count > 0)
 			{
 				// remove children from search
-				creatorTypes = creatorTypes.Except(childCreatorTypes);
+				creatorTypes = creatorTypes.Except(childCreatorTypes).ToList();
 
-				m_childCreatorNodes = childCreatorTypes.Select(t => new SourceCreatorTreeNode(factory, t, creatorTypes));
+				m_childCreatorNodes = childCreatorTypes.Select(t => new SourceCreatorTreeNode(factory, t, creatorTypes)).ToList();
 			}
 		}
 
@@ -54,7 +47,7 @@ namespace Squid.Core
 				.Where(t => !t.IsInterface && baseType.IsAssignableFrom(t))
 				.ToList();
 
-			SourceCreatorTreeNode rootCreatorNode = new SourceCreatorTreeNode(factory, baseType, creatorTypes);
+			var rootCreatorNode = new SourceCreatorTreeNode(factory, baseType, creatorTypes);
 
 			return rootCreatorNode;
 		}
@@ -63,7 +56,7 @@ namespace Squid.Core
 		{
 			if (m_childCreatorNodes != null)
 			{
-				foreach (SourceCreatorTreeNode childCreatorNode in m_childCreatorNodes)
+				foreach (var childCreatorNode in m_childCreatorNodes)
 				{
 					if (childCreatorNode.Creator == null || childCreatorNode.Creator.Supports(uri))
 						return childCreatorNode.GetCreator(uri);
@@ -74,14 +67,14 @@ namespace Squid.Core
 
 		public ISourceCreator GetCreator(Type type)
 		{
-			if (m_type.Equals(type))
+			if (m_type == type)
 				return Creator;
 
 			if (m_childCreatorNodes != null)
 			{
-				foreach (SourceCreatorTreeNode childCreatorNode in m_childCreatorNodes)
+				foreach (var childCreatorNode in m_childCreatorNodes)
 				{
-					ISourceCreator creator = GetCreator(type);
+					var creator = childCreatorNode.GetCreator(type);
 					if (creator != null)
 						return creator;
 				}

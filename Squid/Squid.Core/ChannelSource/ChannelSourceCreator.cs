@@ -7,7 +7,7 @@ namespace Squid.Core
 	{
 		public const string CreatorParameterName = "Creator";
 
-		public ChannelSourceCreator(ISourceFactory factory)
+		protected ChannelSourceCreator(ISourceFactory factory)
 			: base(factory)
 		{
 			SourceType = typeof(IChannelSource);

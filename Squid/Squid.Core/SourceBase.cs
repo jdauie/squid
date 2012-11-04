@@ -7,9 +7,9 @@ namespace Squid.Core
 {
 	public abstract class SourceBase : ISource
 	{
-		private ParameterList m_parameters;
+		private readonly ParameterList m_parameters;
 
-		public SourceBase(Uri uri, ParameterList parameters)
+		protected SourceBase(Uri uri, ParameterList parameters)
 			: this(uri)
 		{
 			if (parameters != null)

@@ -21,10 +21,10 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <TextBox Grid.Row="0" Grid.Column="0" Height="22" HorizontalAlignment="Stretch" Name="InputPath" />
-            <Button Grid.Row="0" Grid.Column="1" Content="Retrieve" Height="23" Name="buttonRetrieve" VerticalAlignment="Top" Width="75" Click="buttonRetrieve_Click" />
+            <Button Grid.Row="0" Grid.Column="1" Content="Retrieve" Height="23" Name="buttonRetrieve" VerticalAlignment="Top" Width="75" Click="OnRetrieveClick" />
         </Grid>
 
-        <DataGrid Grid.Row="1" Name="ChannelInfo" AutoGenerateColumns="False" MouseDoubleClick="ChannelInfo_MouseDoubleClick">
+        <DataGrid Grid.Row="1" Name="ChannelInfo" AutoGenerateColumns="False" MouseDoubleClick="OnChannelInfoMouseDoubleClick">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Image">
                     <DataGridTemplateColumn.CellTemplate>
@@ -42,7 +42,7 @@
 
         <GridSplitter Grid.Row="2" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" Height="5" VerticalAlignment="Top" />
 
-        <DataGrid Grid.Row="3" Name="DownloadSources" AutoGenerateColumns="False" MouseDoubleClick="DownloadSources_MouseDoubleClick">
+        <DataGrid Grid.Row="3" Name="DownloadSources" AutoGenerateColumns="False" MouseDoubleClick="OnDownloadSourcesMouseDoubleClick">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Image">
                     <DataGridTemplateColumn.CellTemplate>

@@ -1,22 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
-using System.Threading;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Windows.Markup;
 
 using Squid.Core;
 
@@ -34,7 +22,7 @@ namespace Squid.App
 			InputPath.Text = "http://www.youtube.com/user/psystarcraft";
 		}
 
-		private void buttonRetrieve_Click(object sender, RoutedEventArgs e)
+		private void OnRetrieveClick(object sender, RoutedEventArgs e)
 		{
 			string url = InputPath.Text;
 			buttonRetrieve.Tag = buttonRetrieve.Content;
@@ -43,25 +31,25 @@ namespace Squid.App
 
 			DownloadSources.ItemsSource = null;
 
-			BackgroundWorker worker = new BackgroundWorker();
-			worker.DoWork += new DoWorkEventHandler(BackgroundDownloadSourceStart);
-			worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BackgroundDownloadSourceCompleted);
+			var worker = new BackgroundWorker();
+			worker.DoWork += BackgroundDownloadSourceStart;
+			worker.RunWorkerCompleted += BackgroundDownloadSourceCompleted;
 			worker.RunWorkerAsync(url);
 		}
 
 		private void BackgroundDownloadSourceStart(object sender, DoWorkEventArgs e)
 		{
-			Uri url = new Uri((string)e.Argument);
-			Context context = Context.Instance;
-			ISource source = context.FindFactoryByCreatorType(typeof(ChannelSourceCreator)).Create(url);
+			var url = new Uri((string)e.Argument);
+			var context = Context.Instance;
+			var source = context.FindFactoryByCreatorType(typeof(ChannelSourceCreator)).Create(url);
 			e.Result = source;
 		}
 
 		private void BackgroundDownloadSourceCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
-			this.Dispatcher.BeginInvoke((Action)delegate()
+			Dispatcher.BeginInvoke((Action)delegate()
 			{
-				ChannelSource channelSource = (ChannelSource)e.Result;
+				var channelSource = (ChannelSource)e.Result;
 				var channelCollection = new ObservableCollection<ChannelSource>(new ChannelSource[] { channelSource });
 
 				ChannelInfo.ItemsSource = channelCollection;
@@ -72,23 +60,23 @@ namespace Squid.App
 			});
 		}
 
-		private void DownloadSources_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+		private void OnDownloadSourcesMouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
-			DownloadSource lightweightDownloadSource = DownloadSources.SelectedItem as DownloadSource;
+			var lightweightDownloadSource = DownloadSources.SelectedItem as DownloadSource;
 			if (lightweightDownloadSource != null)
 			{
-				MainWindow window = new MainWindow();
+				var window = new MainWindow();
 				window.LoadUri(lightweightDownloadSource.Uri.AbsoluteUri);
 				window.ShowDialog();
 			}
 		}
 
-		private void ChannelInfo_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+		private void OnChannelInfoMouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
-			ChannelSource source = ChannelInfo.SelectedItem as ChannelSource;
+			var source = ChannelInfo.SelectedItem as ChannelSource;
 			if (source != null)
 			{
-				IPagedChannelSourceCreator pagedSourceCreator = source.Creator as IPagedChannelSourceCreator;
+				var pagedSourceCreator = source.Creator as IPagedChannelSourceCreator;
 				if (pagedSourceCreator != null)
 				{
 					var downloadSources = pagedSourceCreator.GetPage(source, 1);

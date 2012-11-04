@@ -11,7 +11,7 @@ namespace Squid.App
 	{
         public App()
         {
-			Context context = Context.Instance;
+			var context = Context.Instance;
         }
 	}
 }

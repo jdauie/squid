@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Net;
 using System.IO;
-using System.Web;
-using System.Xml.XPath;
 
 namespace Squid.Core
 {
@@ -34,8 +29,9 @@ namespace Squid.Core
 
 		public override ISource Create(Uri uri)
 		{
-			DownloadSource downloadSource = new DownloadSource(uri, this);
-			DownloadSpecifier downloadSpecifier = new DownloadSpecifier(uri, downloadSource);
+			var downloadSource = new DownloadSource(uri, this);
+			// why was this here? debugging?
+			//var downloadSpecifier = new DownloadSpecifier(uri, downloadSource);
 			return downloadSource;
 		}
 
@@ -49,7 +45,7 @@ namespace Squid.Core
 
 		public override Stream CreateStream(Uri uri, long startPosition, long endPosition)
 		{
-			HttpWebRequest request = (HttpWebRequest)GetRequest(uri);
+			var request = (HttpWebRequest)GetRequest(uri);
 			if (startPosition > 0)
 			{
 				if (endPosition > 0)
@@ -57,7 +53,7 @@ namespace Squid.Core
 				else
 					request.AddRange(startPosition);
 			}
-			HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+			var response = (HttpWebResponse)request.GetResponse();
 			Stream stream = response.GetResponseStream();
 			return stream;
 		}
@@ -66,7 +62,7 @@ namespace Squid.Core
 		{
 			RemoteFileInfo fileInfo = null;
 			WebRequest request = GetRequest(uri);
-			using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+			using (var response = (HttpWebResponse)request.GetResponse())
 			{
 				bool acceptRanges = String.Equals(response.Headers["Accept-Ranges"], "bytes", StringComparison.InvariantCultureIgnoreCase);
 				fileInfo = new RemoteFileInfo(response.ContentType, response.LastModified, response.ContentLength, acceptRanges);
