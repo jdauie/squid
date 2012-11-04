@@ -7,7 +7,7 @@ namespace Squid.Core
 {
 	public abstract class HttpChannelSourceCreator : ChannelSourceCreator
 	{
-		public HttpChannelSourceCreator(ISourceFactory factory)
+		protected HttpChannelSourceCreator(ISourceFactory factory)
 			: base(factory)
 		{
 		}
@@ -27,16 +27,15 @@ namespace Squid.Core
 
 		protected virtual WebRequest GetRequest(Uri uri, string postData)
 		{
-			ASCIIEncoding encoding = new ASCIIEncoding();
-			byte[] bytes = encoding.GetBytes(postData);
+			byte[] bytes = Encoding.ASCII.GetBytes(postData);
 
-			WebRequest request = WebRequest.Create(uri);
+			var request = WebRequest.Create(uri);
 			request.Method = "POST";
 			request.ContentType = "application/x-www-form-urlencoded";
 			request.ContentLength = bytes.Length;
 			request.Timeout = 30000;
 
-			using (Stream stream = request.GetRequestStream())
+			using (var stream = request.GetRequestStream())
 			{
 				stream.Write(bytes, 0, bytes.Length);
 			}
@@ -46,20 +45,20 @@ namespace Squid.Core
 
 		private Stream CreateStream(HttpWebRequest request)
 		{
-			HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-			Stream stream = response.GetResponseStream();
+			var response = (HttpWebResponse)request.GetResponse();
+			var stream = response.GetResponseStream();
 			return stream;
 		}
 
 		protected override Stream CreateStream(Uri uri)
 		{
-			HttpWebRequest request = (HttpWebRequest)GetRequest(uri);
+			var request = (HttpWebRequest)GetRequest(uri);
 			return CreateStream(request);
 		}
 
 		protected Stream CreateStream(Uri uri, string postData)
 		{
-			HttpWebRequest request = (HttpWebRequest)GetRequest(uri, postData);
+			var request = (HttpWebRequest)GetRequest(uri, postData);
 			return CreateStream(request);
 		}
 	}

@@ -30,8 +30,8 @@ namespace Squid.Core
 
 	public sealed class KeyEqualityComparer<T, TKey> : IEqualityComparer<T>
 	{
-		private readonly IEqualityComparer<TKey> equalityComparer;
-		private readonly Func<T, TKey> keySelector;
+		private readonly IEqualityComparer<TKey> m_equalityComparer;
+		private readonly Func<T, TKey> m_keySelector;
 
 		public KeyEqualityComparer(Func<T, TKey> keySelector)
 			: this(keySelector, EqualityComparer<TKey>.Default)
@@ -40,18 +40,18 @@ namespace Squid.Core
 
 		public KeyEqualityComparer(Func<T, TKey> keySelector, IEqualityComparer<TKey> equalityComparer)
 		{
-			this.keySelector = keySelector;
-			this.equalityComparer = equalityComparer;
+			m_keySelector = keySelector;
+			m_equalityComparer = equalityComparer;
 		}
 
 		public bool Equals(T x, T y)
 		{
-			return this.equalityComparer.Equals(this.keySelector(x), this.keySelector(y));
+			return m_equalityComparer.Equals(m_keySelector(x), m_keySelector(y));
 		}
 
 		public int GetHashCode(T obj)
 		{
-			return this.equalityComparer.GetHashCode(this.keySelector(obj));
+			return m_equalityComparer.GetHashCode(m_keySelector(obj));
 		}
 	}
 }

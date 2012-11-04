@@ -10,7 +10,5 @@ namespace Squid.Core
 		string Key { get; }
 		string Name { get; }
 		string SuggestedFileName { get; }
-
-		int CompareTo(IDownloadSpecifier specifier);
 	}
 }

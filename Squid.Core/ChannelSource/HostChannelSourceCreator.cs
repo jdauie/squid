@@ -8,7 +8,7 @@ namespace Squid.Core
 		protected Regex HostRegex { get; private set; }
 		protected Regex PathAndQueryRegex { get; private set; }
 
-		public HostChannelSourceCreator(ISourceFactory factory)
+		protected HostChannelSourceCreator(ISourceFactory factory)
 			: base(factory)
 		{
 		}

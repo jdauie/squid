@@ -79,7 +79,7 @@ namespace Squid.Core
 
 		public virtual int CompareTo(IDownloadSpecifier specifier)
 		{
-			return Key.CompareTo(specifier.Key);
+			return String.CompareOrdinal(Key, specifier.Key);
 		}
 
 		protected virtual string GetExtension()
@@ -94,15 +94,13 @@ namespace Squid.Core
 		{
 			string mimeType = RemoteFileInfo.ContentType;
 			string result = string.Empty;
-			RegistryKey key = null;
-			object value = null;
 
 			if (!string.IsNullOrEmpty(mimeType))
 			{
-				key = Registry.ClassesRoot.OpenSubKey(@"MIME\Database\Content Type\" + mimeType, false);
+				RegistryKey key = Registry.ClassesRoot.OpenSubKey(@"MIME\Database\Content Type\" + mimeType, false);
 				if (key != null)
 				{
-					value = key.GetValue("Extension", null);
+					object value = key.GetValue("Extension", null);
 					if (value != null)
 						result = value.ToString();
 				}

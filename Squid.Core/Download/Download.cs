@@ -76,7 +76,7 @@ namespace Squid.Core
 				File.Delete(LocalPath);
 			}
 
-			using (FileStream fs = new FileStream(LocalPath, FileMode.Create, FileAccess.Write))
+			using (var fs = new FileStream(LocalPath, FileMode.Create, FileAccess.Write))
 			{
 				fs.SetLength(Math.Max(DownloadSpecifier.RemoteFileInfo.FileSize, 0));
 			}
@@ -91,7 +91,7 @@ namespace Squid.Core
 
 			AllocateLocalFile();
 
-			using (FileStream fs = new FileStream(LocalPath, FileMode.Open, FileAccess.Write))
+			using (var fs = new FileStream(LocalPath, FileMode.Open, FileAccess.Write))
 			{
 				m_tasks = DownloadSegments.Select(s => new Task(() => BackgroundDownloadSegmentStart(s, fs))).ToArray();
 				Parallel.ForEach(m_tasks, t => t.Start());
@@ -102,7 +102,7 @@ namespace Squid.Core
 
 		public void Stop()
 		{
-			foreach (DownloadSegment segment in DownloadSegments)
+			foreach (var segment in DownloadSegments)
 			{
 				segment.State = DownloadSegmentState.PAUSED;
 			}
@@ -118,11 +118,11 @@ namespace Squid.Core
 		{
 			long fileSize = remoteFileInfo.FileSize;
 			long segmentSize = fileSize / segmentCount;
-			List<Segment> segments = new List<Segment>();
+			var segments = new List<Segment>();
 			long segmentStart = 0;
 			while (segmentStart < fileSize)
 			{
-				long segmentEnd = System.Math.Min(fileSize, segmentStart + segmentSize);
+				long segmentEnd = Math.Min(fileSize, segmentStart + segmentSize);
 				if (segments.Count == segmentCount - 1)
 					segmentEnd = fileSize;
 				segments.Add(new Segment(segmentStart, segmentEnd));

@@ -11,7 +11,7 @@ namespace Squid.Core
 		public const string DescriptionParameterName = "Description";
 		public const string ThumbnailParameterName = "Thumbnail";
 
-		public VideoChannelSourceCreator(ISourceFactory factory)
+		protected VideoChannelSourceCreator(ISourceFactory factory)
 			: base(factory)
 		{
 		}
@@ -29,7 +29,7 @@ namespace Squid.Core
 			String pageData;
 			using (Stream stream = CreateStream(uri))
 			{
-				using (StreamReader sr = new StreamReader(stream))
+				using (var sr = new StreamReader(stream))
 				{
 					pageData = sr.ReadToEnd();
 				}
@@ -42,7 +42,7 @@ namespace Squid.Core
 			String pageData;
 			using (Stream stream = CreateStream(uri, postData))
 			{
-				using (StreamReader sr = new StreamReader(stream))
+				using (var sr = new StreamReader(stream))
 				{
 					pageData = sr.ReadToEnd();
 				}
