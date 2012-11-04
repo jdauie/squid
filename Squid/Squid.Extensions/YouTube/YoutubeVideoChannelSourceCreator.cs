@@ -38,17 +38,20 @@ namespace Squid.Extensions.YouTube
 			string description = pageData.GetStringBetween("<meta name=\"description\" content=\"", "\"");
 			string thumbnail = pageData.GetStringBetween("<meta property=\"og:image\" content=\"", "\"");
 
+			// thumbnail format changed (no http/s)
+			// //i1.ytimg.com/i/dbL-i29FDPYok8X8yIynNQ/1.jpg?v=9aee31
+
 			string ajaxSessionInfo = pageData.GetStringBetween("window.ajax_session_info", "'", "'");
 
-			ParameterList parameters = new ParameterList();
-			parameters.AddValue(VideoChannelSourceCreator.UserParameterName, username);
-			parameters.AddValue(VideoChannelSourceCreator.UserHrefParameterName, userHref);
-			parameters.AddValue(VideoChannelSourceCreator.TitleParameterName, title);
-			parameters.AddValue(VideoChannelSourceCreator.DescriptionParameterName, description);
-			parameters.AddValue(VideoChannelSourceCreator.ThumbnailParameterName, thumbnail);
+			var parameters = new ParameterList();
+			parameters.AddValue(UserParameterName, username);
+			parameters.AddValue(UserHrefParameterName, userHref);
+			parameters.AddValue(TitleParameterName, title);
+			parameters.AddValue(DescriptionParameterName, description);
+			parameters.AddValue(ThumbnailParameterName, thumbnail);
 			parameters.AddValue(AjaxSessionInfoParameterName, ajaxSessionInfo);
 
-			YoutubeVideoChannelSource channelSource = new YoutubeVideoChannelSource(uri, this, parameters);
+			var channelSource = new YoutubeVideoChannelSource(uri, this, parameters);
 			
 			var downloadSources = ParseDownloadSources(pageData, channelSource);
 			foreach (var downloadSource in downloadSources)
@@ -59,7 +62,7 @@ namespace Squid.Extensions.YouTube
 
 		private IEnumerable<IDownloadSource> ParseDownloadSources(string pageData, YoutubeVideoChannelSource channelSource)
 		{
-			List<IDownloadSource> sources = new List<IDownloadSource>();
+			var sources = new List<IDownloadSource>();
 			DownloadSourceCreator downloadSourceCreator = null;
 
 			int currentPosition = 0;
@@ -79,12 +82,12 @@ namespace Squid.Extensions.YouTube
 
 				videoThumb = new Uri(channelSource.Uri, videoThumb).AbsoluteUri;
 				int parsedViews = int.Parse(videoViews, System.Globalization.NumberStyles.AllowThousands);
-				Uri absoluteUri = new Uri(channelSource.Uri, videoUri);
+				var absoluteUri = new Uri(channelSource.Uri, videoUri);
 
 				if (downloadSourceCreator == null)
 					downloadSourceCreator = (DownloadSourceCreator)Factory.Context.FindFactoryByCreatorType(typeof(DownloadSourceCreator)).GetCreator(absoluteUri);
 
-				ParameterList videoParameters = new ParameterList();
+				var videoParameters = new ParameterList();
 				videoParameters.AddValue(VideoDownloadSourceCreator.IdParameterName, videoId);
 				videoParameters.AddValue(VideoDownloadSourceCreator.TitleParameterName, videoTitle);
 				videoParameters.AddValue(VideoDownloadSourceCreator.DescriptionParameterName, channelSource.Description);
@@ -94,7 +97,7 @@ namespace Squid.Extensions.YouTube
 				videoParameters.AddValue(YoutubeVideoDownloadSourceCreator.TimeParameterName, videoTime);
 				videoParameters.AddValue(YoutubeVideoDownloadSourceCreator.ViewCountParameterName, parsedViews);
 
-				YoutubeVideoDownloadSource ds = new YoutubeVideoDownloadSource(absoluteUri, downloadSourceCreator, videoParameters);
+				var ds = new YoutubeVideoDownloadSource(absoluteUri, downloadSourceCreator, videoParameters);
 				sources.Add(ds);
 			}
 			return sources;
@@ -102,7 +105,7 @@ namespace Squid.Extensions.YouTube
 
 		public ICollection<IDownloadSource> GetPage(IChannelSource source, int page)
 		{
-			YoutubeVideoChannelSource channelSource = (YoutubeVideoChannelSource)source;
+			var channelSource = (YoutubeVideoChannelSource)source;
 			// youtube channels are always on page zero,
 			// so relative pages must be greater than zero
 			if (page <= 0)
@@ -112,7 +115,7 @@ namespace Squid.Extensions.YouTube
 			string postData = String.Format(pagingPostDataFormat, page, ajaxSessionInfo);
 
 			string pagingUrl = String.Format(pagingUrlFormat, channelSource.User);
-			Uri pagingUri = new Uri(channelSource.Uri, pagingUrl);
+			var pagingUri = new Uri(channelSource.Uri, pagingUrl);
 			string pageData = GetPageData(pagingUri, postData);
 
 			string escapedMarkup = pageData.GetStringBetween("\"data\"", "\"", "<\\/div>\"");
